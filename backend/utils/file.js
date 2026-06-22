@@ -1,17 +1,15 @@
-import {USERS_DB_PATH} from "../constants/auth.constants"
+import fs from "fs/promises"
+import {USERS_DB_PATH} from "../constants/auth.constants.js"
 
-const readUserFromDB = async () => {
-    try {
-        return JSON.parse(await fs.readFile(USERS_DB_PATH, "utf-8"))
-    } catch (error) {
-        console.log(error)
-    }
+const readJsonFile = async (path) => {
+    return JSON.parse(await fs.readFile(path, "utf-8"))
 }
 
-const writeUserInDB = async (data) => {
-    try {
-        await fs.writeFile(USERS_DB_PATH, JSON.stringify(data))
-    } catch (error) {
-        console.log(error)
-    }
+const writeJsonFile = async (path, data) => {
+        await fs.writeFile(path, JSON.stringify(data))
+}
+
+
+export {
+    readJsonFile, writeJsonFile
 }
