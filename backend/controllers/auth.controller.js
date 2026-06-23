@@ -5,7 +5,7 @@ const registerUser = async (req, res) => {
 
     return res.status(201).json({
         success : true,
-        message : response.message,
+        message : "User created successfully",
         data : newUser
     })
 }

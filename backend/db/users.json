@@ -1,1 +1,12 @@
-[{"id":1,"username":"shaik_yaseen","password":"$2b$10$aF1W8kw70vwG8jGdtQrI1eaV7d4UAytbv0o4tfG7STSN2C9bg0uAu"}]
+[
+    {
+        "id": 1,
+        "username": "shaik yaseen",
+        "password": "$2b$10$d1.8c78y3Uo3mXSPQ9XZ4uGfrvx39SJbrJursKb3nauinVEs4Mu6C"
+    },
+    {
+        "id": 2,
+        "username": "shaik Adnan",
+        "password": "$2b$10$rViQ./8/KA9kxjjLodd/YeyzHllrypcp23rXKpbAQ7/2ZrHg99GzS"
+    }
+]
