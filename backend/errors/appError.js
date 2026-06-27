@@ -19,7 +19,13 @@ class ConflictError extends AppError{
     }
 }
 
+class NotFoundError extends AppError{
+    constructor(message = "Resource not found"){
+        super(message, 404)
+    }
+}
+
 
 export {
-    ValidationError, ConflictError
+    ValidationError, ConflictError, NotFoundError
 }

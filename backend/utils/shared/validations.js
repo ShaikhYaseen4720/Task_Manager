@@ -1,4 +1,5 @@
-import {AUTH_FIELDS, AUTH_PROPERTY_CONFIGS} from "../constants/auth.constants.js"
+import {AUTH_FIELDS, AUTH_PROPERTY_CONFIGS} from "../../constants/auth.constants.js"
+import { TASK_FEILDS, TASK_PROPERTY_CONFIGS, TASK_REQUIRED_POST_FIELDS } from "../../constants/tasks.constants.js"
 
 const capatilize = (str) => str && str[0].toUpperCase() + str.slice(1)
 
@@ -18,19 +19,24 @@ const validateProperties = (dataObj, key, datatype, min_range, max_range) => {
         return validationResults
     }
 
-    validationEntity = validationEntity.trim()
-
-    if(!validationEntity){
-        validationResults.acceptable = false
-        validationResults.message = `${capatilize(key)} is required`
-        return validationResults
+    if (datatype === "string"){
+        validationEntity = validationEntity.trim()
+    
+        if(!validationEntity){
+            validationResults.acceptable = false
+            validationResults.message = `${capatilize(key)} is required`
+            return validationResults
+        }
     }
 
-    if(validationEntity.length < min_range || validationEntity.length > max_range){
-        validationResults.acceptable = false
-        validationResults.message = `${capatilize(key)} out of range! expected range is ${min_range}-${max_range} characters`
-        return validationResults
+    if(min_range !== undefined && max_range !== undefined){
+        if(validationEntity.length < min_range || validationEntity.length > max_range){
+            validationResults.acceptable = false
+            validationResults.message = `${capatilize(key)} out of range! expected range is ${min_range}-${max_range} characters`
+            return validationResults
+        }
     }
+
 
     return validationResults
 }
@@ -96,6 +102,16 @@ const validateAuthData = (user) => {
     })
 }
 
+const validateTaskData = (task, isPostReq = true) => {
+        return validateData({
+        data : task,
+        requiredAllFields : isPostReq ,
+        moduleProperty : TASK_PROPERTY_CONFIGS,
+        moduleFields :  isPostReq ? TASK_REQUIRED_POST_FIELDS : TASK_FEILDS
+    })
+}
+
 export {
-    validateAuthData
+    validateAuthData,
+    validateTaskData
 }

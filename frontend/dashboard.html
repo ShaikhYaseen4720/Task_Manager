@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #eef7ff;
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        input {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 10px;
+        }
+
+        #taskBtn {
+            background: #1e88e5;
+            color: white;
+            padding: 16px 35px;
+            font-size: 16px;
+        }
+
+        .task-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .task-card {
+            padding: 15px;
+            border-radius: 15px;
+            min-height: 180px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .task-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .date {
+            margin-top: 10px;
+            color: #444;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .actions {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .edit-btn {
+            background: #2e7d32;
+            color: white;
+            padding: 10px 18px;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+            color: white;
+            padding: 10px 18px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+        }
+
+        .logout-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 25px;
+        }
+
+        #logoutBtn {
+            background: #d32f2f;
+            color: white;
+            font-weight: bold;
+            padding: 12px 25px;
+            border-radius: 10px;
+        }
+
+        #logoutBtn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="logout-container">
+        <button id="logoutBtn">
+            Logout
+        </button>
+    </div>
+
+    <div class="input-container">
+        <input
+            type="text"
+            id="taskInput"
+            placeholder="Enter task..."
+        >
+
+        <button id="taskBtn">
+            Add
+        </button>
+    </div>
+
+    <div class="task-container" id="taskContainer">
+    </div>
+
+</div>
+
+<script>
+
+    const API_URL = "http://localhost:3000/tasks"
+
+    let editTaskId = null
+
+    function randomColor() {
+        const colors = [
+            "#E3F2FD",
+            "#FFF3E0",
+            "#F3E5F5",
+            "#E8F5E9",
+            "#FFF9C4",
+            "#FCE4EC",
+            "#E0F7FA"
+        ]
+
+        return colors[
+            Math.floor(Math.random() * colors.length)
+        ]
+    }
+
+    async function loadTasks() {
+
+        const response = await fetch(API_URL, {
+            credentials: "include"
+        })
+
+        if (response.status === 401) {
+            alert("Session expired")
+            window.location.href = "./login.html"
+            return
+        }
+
+        const tasks = await response.json()
+
+        renderTasks(tasks.data)
+    }
+
+    function renderTasks(tasks) {
+
+        const container =
+            document.getElementById("taskContainer")
+
+        container.innerHTML = ""
+
+        tasks.forEach(task => {
+
+            const card =
+                document.createElement("div")
+
+            card.className = "task-card"
+
+            card.style.background =
+                randomColor()
+
+            card.innerHTML = `
+                <input
+                    class="checkbox"
+                    type="checkbox"
+                    ${task.markAsCompleted ? "checked" : ""}
+                    onchange="toggleTask(${task.id}, this.checked)"
+                >
+
+                <div class="task-title ${task.markAsCompleted ? 'completed' : ''}">
+                    ${task.task}
+                </div>
+
+                <div class="date">
+                    Created:
+                    ${new Date(task.createdAt).toLocaleString()}
+                </div>
+
+                <div class="status">
+                    ${task.markAsCompleted
+                        ? "Completed"
+                        : "Pending"}
+                </div>
+
+                <div class="actions">
+                    <button
+                        class="edit-btn"
+                        onclick="editTask(${task.id}, '${task.task}')">
+                        Edit
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteTask(${task.id})">
+                        Delete
+                    </button>
+                </div>
+            `
+
+            container.appendChild(card)
+        })
+    }
+
+    async function addOrUpdateTask() {
+
+        const input =
+            document.getElementById("taskInput")
+
+        const task =
+            input.value.trim()
+
+        if (!task)
+            return
+
+        if (editTaskId) {
+
+            await fetch(
+                `${API_URL}/${editTaskId}`,
+                {
+                    method: "PATCH",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify({
+                        task
+                    })
+                }
+            )
+
+            editTaskId = null
+
+            const btn =
+                document.getElementById("taskBtn")
+
+            btn.textContent = "Add"
+            btn.style.background = "#1e88e5"
+
+        } else {
+
+            await fetch(API_URL, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    task
+                })
+            })
+        }
+
+        input.value = ""
+
+        loadTasks()
+    }
+
+    function editTask(id, task) {
+
+        editTaskId = id
+
+        document.getElementById(
+            "taskInput"
+        ).value = task
+
+        const btn =
+            document.getElementById("taskBtn")
+
+        btn.textContent = "Done"
+
+        btn.style.background = "#2e7d32"
+    }
+
+    async function deleteTask(id) {
+
+        await fetch(
+            `${API_URL}/${id}`,
+            {
+                method: "DELETE",
+                credentials: "include"
+            }
+        )
+
+        loadTasks()
+    }
+
+    async function toggleTask(id, completed) {
+
+        await fetch(
+            `${API_URL}/${id}`,
+            {
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    markAsCompleted: completed
+                })
+            }
+        )
+
+        loadTasks()
+    }
+
+    async function logout() {
+
+        const response = await fetch(
+            "http://localhost:3000/auth/logout",
+            {
+                method: "POST",
+                credentials: "include"
+            }
+        )
+
+        if (response.ok) {
+            window.location.href = "./login.html"
+        } else {
+            alert("Unable to logout")
+        }
+    }
+
+    document
+        .getElementById("taskBtn")
+        .addEventListener(
+            "click",
+            addOrUpdateTask
+        )
+
+    document
+        .getElementById("logoutBtn")
+        .addEventListener(
+            "click",
+            logout
+        )
+
+    loadTasks()
+
+</script>
+
+</body>
+</html>

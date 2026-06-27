@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "userID": 3,
+        "task": "Yoo coders",
+        "markAsCompleted": true,
+        "createdAt": "2026-06-27T13:15:32.984Z"
+    },
+    {
+        "id": 2,
+        "userID": 3,
+        "task": "yoo",
+        "markAsCompleted": false,
+        "createdAt": "2026-06-27T15:17:39.204Z"
+    },
+    {
+        "id": 3,
+        "userID": 3,
+        "task": "coding until death",
+        "markAsCompleted": false,
+        "createdAt": "2026-06-27T15:17:55.086Z"
+    },
+    {
+        "id": 4,
+        "userID": 4,
+        "task": "yoo",
+        "markAsCompleted": false,
+        "createdAt": "2026-06-27T15:18:32.166Z"
+    },
+    {
+        "id": 5,
+        "userID": 4,
+        "task": "my first task",
+        "markAsCompleted": false,
+        "createdAt": "2026-06-27T15:18:39.359Z"
+    }
+]

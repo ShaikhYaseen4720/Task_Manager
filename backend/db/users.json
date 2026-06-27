@@ -1,12 +1,22 @@
 [
     {
-        "id": 1,
-        "username": "shaik yaseen",
-        "password": "$2b$10$d1.8c78y3Uo3mXSPQ9XZ4uGfrvx39SJbrJursKb3nauinVEs4Mu6C"
+        "id": 3,
+        "username": "Shaik Yaseen",
+        "password": "$2b$10$gPDbEp6xjM4KLz8LU.EFAu62rhbUf/FiQlsuRxDden/JizrC2FNc2"
     },
     {
-        "id": 2,
-        "username": "shaik Adnan",
-        "password": "$2b$10$rViQ./8/KA9kxjjLodd/YeyzHllrypcp23rXKpbAQ7/2ZrHg99GzS"
+        "id": 4,
+        "username": "shaikh saniya",
+        "password": "$2b$10$JZlttURIQpeHtJ1iuwvFbO1r/OXPFbLlRZTd4YEMD6XaOUyGcRuKy"
+    },
+    {
+        "id": 5,
+        "username": "Shaik Adnan",
+        "password": "$2b$10$j26/JmgHl/koxtMbBz1xk.N.4GNiUxXo/1Z3itXiyg4U3faXiKIKi"
+    },
+    {
+        "id": 6,
+        "username": "Sahil",
+        "password": "$2b$10$vU3Dphs7mGw8v/gNHeiwiuK/tk3qXfSCHKwfTxO91b1IP829swJf2"
     }
 ]

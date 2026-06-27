@@ -1,6 +1,6 @@
-import {createUser} from "../services/auth.service.js"
+import {createUser, authenticateUser} from "../services/auth.service.js"
 
-const registerUser = async (req, res) => {
+const register = async (req, res) => {
     let newUser = await createUser(req.body)
 
     return res.status(201).json({
@@ -10,6 +10,36 @@ const registerUser = async (req, res) => {
     })
 }
 
+const login = async (req, res) => {
+    let user = await authenticateUser(req.body)
+
+    req.session.userId = user.id 
+    req.session.username = user.username
+
+    return res.json({
+        success : true,
+        message : "User logged in successul"
+    })
+}
+
+const logout = async (req, res) => {
+    req.session.destroy((err) => {
+        if (err){
+            return res.status(500).json({
+                success : false,
+                message : "Unable to logout"
+            })
+        }
+
+        res.clearCookie("connect.sid")
+
+        return res.json({
+            success : "true",
+            message : "User logged out successful"
+        })
+    })
+}
+
 export {
-    registerUser
+    register, login, logout
 }

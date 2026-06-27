@@ -7,6 +7,9 @@ const globalErrorHandler = (err, req, res, next) => {
     if (statusCode === 500){
         console.log(err)
     }
+    else{
+        console.log(err)
+    }
 
     return res.status(statusCode).json({
         success : false,
